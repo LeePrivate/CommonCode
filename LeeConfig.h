@@ -18,7 +18,7 @@ typedef int int32;
 typedef unsigned long long uint64;
 typedef long long int64;
 
-//µ¥ÀıÄ£Ê½,¸ü×¼È·;
+//å•ä¾‹æ¨¡å¼,æ›´å‡†ç¡®;
 #define SINGLE_MODE( ClassName ) \
 	static ClassName* GetSingle() \
 { \
