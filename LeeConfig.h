@@ -18,7 +18,7 @@ typedef int int32;
 typedef unsigned long long uint64;
 typedef long long int64;
 
-//单例模式,更准确;
+//单例模式,更准�?
 #define SINGLE_MODE( ClassName ) \
 	static ClassName* GetSingle() \
 { \
@@ -30,3 +30,19 @@ typedef long long int64;
 protected: varType varName;\
 public: virtual varType Get##funName(void) const { return varName; }\
 public: virtual void Set##funName(varType var){ varName = var; }
+
+#define CREATE_INSTANCE(__TYPE__) \
+	static __TYPE__* Create() \
+{ \
+	__TYPE__ *pRet = new __TYPE__(); \
+	if (pRet) \
+	{\
+		return pRet; \
+	}\
+	else \
+	{ \
+		delete pRet; \
+		pRet = NULL; \
+		return NULL; \
+	} \
+}
