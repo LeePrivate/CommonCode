@@ -46,3 +46,5 @@ public: virtual void Set##funName(varType var){ varName = var; }
 		return NULL; \
 	} \
 }
+
+#define BZERO(b,len) (memset((b), 0, (len)), (void) 0)
