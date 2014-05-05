@@ -4,8 +4,8 @@
 #include <string>
 #include <map>
 #include <vector>
-//#include <boost/filesystem.hpp>
-//#include <boost/locale/encoding.hpp>
+
+
 
 using namespace std;
 
@@ -20,7 +20,14 @@ typedef long long int64;
 
 //单例模式,更准�?
 #define SINGLE_MODE( ClassName ) \
-	static ClassName* GetSingle() \
+	static ClassName& GetSingle() \
+{ \
+	static ClassName s_##ClassName; \
+	return s_##ClassName; \
+}
+
+#define SINGLE_MODE_POINTER( ClassName ) \
+	static ClassName* GetSinglePointer() \
 { \
 	static ClassName s_##ClassName; \
 	return &s_##ClassName; \

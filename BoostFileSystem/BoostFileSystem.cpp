@@ -1,5 +1,4 @@
 #include "BoostFilesystem.h"
-#include "XmlConvertCsv.h"
 
 
 BoostFileSystem::BoostFileSystem()
@@ -31,12 +30,12 @@ bool BoostFileSystem::ReadXmlConfig()
 		
 		TiXmlElement* TargetNode = rootNode->FirstChildElement("TargetPath");			//读取目标文件路径;
 		string tmpStr = TargetNode->Attribute("Path");
-		XmlConvertCsv::GetSingle().ConvertUtf8ToGbk_Boost(tmpStr);
+		BoostCodeConversion::GetSingle().ConvertUtf8ToGbk_Boost(tmpStr);
 		m_TargetPath = tmpStr;
 		
 		TiXmlElement* DestNode = rootNode->FirstChildElement("SavePath");				//读取目的地路径;
 		tmpStr =DestNode->Attribute("Path");
-		XmlConvertCsv::GetSingle().ConvertUtf8ToGbk_Boost(tmpStr);
+		BoostCodeConversion::GetSingle().ConvertUtf8ToGbk_Boost(tmpStr);
 		m_DestinationPath = tmpStr;
 	} while (0);
 	return false;
@@ -137,3 +136,51 @@ void BoostFileSystem::Clear()
 	m_vecFile.clear();
 	m_vecFilePath.clear();
 }
+
+void BoostCodeConversion::ConvertGbkToUtf8_Boost(string& strGbk)
+{
+	strGbk = boost::locale::conv::between(strGbk,"UTF-8", "GBK");
+}
+
+void BoostCodeConversion::ConvertUtf8ToGbk_Boost(string& strUtf8)
+{
+	strUtf8 = boost::locale::conv::between(strUtf8,"GBK", "UTF-8");
+}
+
+#if defined _WIN32 || defined _WIN64
+
+void BoostCodeConversion::ConvertGbkToUtf8_WIN( string& strGBK )																					
+{
+	int len=MultiByteToWideChar(CP_ACP, 0, (LPCSTR)strGBK.c_str(), -1, NULL,0);
+	WCHAR * wszUtf8 = new WCHAR[len+1];
+	memset(wszUtf8, 0, len * 2 + 2);
+	MultiByteToWideChar(CP_ACP, 0, (LPCSTR)strGBK.c_str(), -1, wszUtf8, len);
+
+	len = WideCharToMultiByte(CP_UTF8, 0, wszUtf8, -1, NULL, 0, NULL, NULL);
+	char *szUtf8=new char[len + 1];
+	memset(szUtf8, 0, len + 1);
+	WideCharToMultiByte(CP_UTF8, 0, wszUtf8, -1, szUtf8, len, NULL,NULL);
+
+	strGBK = szUtf8;
+	delete[] szUtf8;
+	delete[] wszUtf8;
+}
+
+void BoostCodeConversion::ConvertUtf8ToGbk_WIN( string& strUtf8 )																						
+{
+	int len=MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(strUtf8.c_str()), -1, NULL,0);
+	WCHAR * wszGBK = new WCHAR[len+1];
+	memset(wszGBK, 0, len * 2 + 2);
+	MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)(strUtf8.c_str()), -1, wszGBK, len);
+
+	len = WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, NULL, 0, NULL, NULL);
+	char *szGBK=new char[len + 1];
+	memset(szGBK, 0, len + 1);
+	WideCharToMultiByte (CP_ACP, 0, wszGBK, -1, szGBK, len, NULL,NULL);
+
+	strUtf8 = szGBK;
+	delete[] szGBK;
+	delete[] wszGBK;
+}
+
+#endif
