@@ -8,7 +8,7 @@ BoostFileSystem::BoostFileSystem()
 
 BoostFileSystem::~BoostFileSystem()
 {
-
+	 Clear();
 }
 
 bool BoostFileSystem::ReadXmlConfig()
@@ -51,7 +51,7 @@ string BoostFileSystem::GetDestinationPath()
 	return m_DestinationPath;
 }
 
-bool BoostFileSystem::VerifyInputAndSearch()
+bool BoostFileSystem::SearchAndVerifyFile()
 {
 	if (boost::filesystem::exists(m_TargetPath))											//does folder or file actually exist;
 	{

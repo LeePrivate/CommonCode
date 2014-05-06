@@ -1,3 +1,17 @@
+/*!
+ * \file BoostFilesystem.h
+ *
+ * \author LEE
+ * \date 五月 2014
+ *使用说明:
+ *该组件使用boost库来达到文件的查找,验证,转换文件编码等工作;
+ *使用时 需要在工作目录建立Config文件夹,其中建立 XmlConvertConfig.xml 配置文件,其中给出读取文件的路径,和要保存的目的地路径;
+ *
+ *使用步骤:
+ *BoostFileSystem::GetSingle().ReadXmlConfig();															1.从XML读取目标文件路径和文件转换目的地路径;
+ *BoostFileSystem::GetSingle().SearchAndVerifyFile();													2.验证配置文件中要找的文件的路径或是文件是否存在;
+ */
+
 #pragma once
 
 #include "LeeConfig.h"
@@ -20,12 +34,12 @@ public:
 
 	bool ReadXmlConfig();																																	//读取xml配置文件;
 
+	bool SearchAndVerifyFile();																															//验证输入的文件路径,如果是文件夹则自动寻找里面的xml文件;
+
 	boost::filesystem::path& GetFolderOrFilename();																							//得到文件夹路径或文件路径;
 
 	string GetDestinationPath();																															//得到文件转换目的地路径;
 		
-	bool VerifyInputAndSearch();																														//验证输入的路径,如果是文件夹则自动寻找里面的xml文件;
-
 	bool IsTmxFile(boost::filesystem::path& filePath);																							//验证是否是Tmx文件;
 
 	void ShowFilename();																																	//输出m_vecFile中的文件路径;
