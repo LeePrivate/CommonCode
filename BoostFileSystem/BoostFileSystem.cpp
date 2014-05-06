@@ -58,7 +58,7 @@ bool BoostFileSystem::VerifyInputAndSearch()
 		if (boost::filesystem::is_directory(m_TargetPath))								//is folder;
 		{
 			cout << "You input is folder ." << endl;
-			//copy(boost::filesystem::directory_iterator(m_FolderOrFilename), boost::filesystem::directory_iterator(), ostream_iterator<boost::filesystem::directory_entry>(cout, "\n"));  //将文件夹中的文件或子文件夹路径输出;
+			
 			copy(boost::filesystem::directory_iterator(m_TargetPath), boost::filesystem::directory_iterator(), back_inserter(m_vecFilePath));								//将 m_FolderOrFilename 中的子文件夹和文件,分别存放到一个vector中;
 			
 			for (vector<boost::filesystem::path>::iterator iter = m_vecFilePath.begin(); iter != m_vecFilePath.end() ; ++iter)

@@ -52,7 +52,9 @@ protected:
 private:
 };
 
-class BoostCodeConversion
+
+
+class BoostCodeConversion														
 {
 public:
 	void ConvertGbkToUtf8_Boost(string& strGbk);
