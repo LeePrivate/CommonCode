@@ -1,5 +1,6 @@
 #pragma once
 
+#include <assert.h>
 #include <iostream>
 #include <string>
 #include <map>
@@ -55,3 +56,4 @@ public: virtual void Set##funName(varType var){ varName = var; }
 }
 
 #define BZERO(b,len) (memset((b), 0, (len)), (void) 0)
+
