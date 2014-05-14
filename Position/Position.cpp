@@ -2,66 +2,66 @@
 #include "assert.h"
 
 
-Position::Position(void) : x(0), y(0)
+Position2D::Position2D(void) : x(0), y(0)
 {
 }
 
-Position::Position(float x, float y) : x(x), y(y)
+Position2D::Position2D(float x, float y) : x(x), y(y)
 {
 }
 
-Position::Position(const Position& other) : x(other.x), y(other.y)
+Position2D::Position2D(const Position2D& other) : x(other.x), y(other.y)
 {
 }
 
-Position& Position::operator= (const Position& other)
+Position2D& Position2D::operator= (const Position2D& other)
 {
 	SetPoint(other.x, other.y);
 	return *this;
 }
 
 
-Position Position::operator+(const Position& right) const
+Position2D Position2D::operator+(const Position2D& right) const
 {
-	return Position(this->x + right.x, this->y + right.y);
+	return Position2D(this->x + right.x, this->y + right.y);
 }
 
-Position Position::operator-(const Position& right) const
+Position2D Position2D::operator-(const Position2D& right) const
 {
-	return Position(this->x - right.x, this->y - right.y);
+	return Position2D(this->x - right.x, this->y - right.y);
 }
 
-Position Position::operator-() const
+Position2D Position2D::operator-() const
 {
-	return Position(-x, -y);
+	return Position2D(-x, -y);
 }
 
-Position Position::operator*(float a) const
+Position2D Position2D::operator*(float a) const
 {
-	return Position(this->x * a, this->y * a);
+	return Position2D(this->x * a, this->y * a);
 }
 
-Position Position::operator/(float a) const
+Position2D Position2D::operator/(float a) const
 {
 	if (!a)
 	{
 		assert(false);
 	}
-	return Position(this->x / a, this->y / a);
+	return Position2D(this->x / a, this->y / a);
 }
 
-void Position::SetPoint(float x, float y)
+void Position2D::SetPoint(float x, float y)
 {
 	this->x = x;
 	this->y = y;
 }
 
-bool Position::Equals(const Position& target) const 
+bool Position2D::Equals(const Position2D& target) const 
 {
 	return (fabs(this->x - target.x) < FLT_EPSILON) && (fabs(this->y - target.y) < FLT_EPSILON);
 }
 
-bool Position::FuzzyEquals(const Position& b, float var) const
+bool Position2D::FuzzyEquals(const Position2D& b, float var) const
 {
 	if(x - var <= b.x && b.x <= x + var)
 		if(y - var <= b.y && b.y <= y + var)
@@ -69,16 +69,16 @@ bool Position::FuzzyEquals(const Position& b, float var) const
 	return false;
 }
 
-float Position::getAngle(const Position& other) const
+float Position2D::getAngle(const Position2D& other) const
 {
-	Position a2 = normalize();
-	Position b2 = other.normalize();
+	Position2D a2 = normalize();
+	Position2D b2 = other.normalize();
 	float angle = atan2f(a2.cross(b2), a2.dot(b2));
 	if( fabs(angle) < FLT_EPSILON ) return 0.f;
 	return angle;
 }
 
-Position Position::rotateByAngle(const Position& pivot, float angle) const
+Position2D Position2D::rotateByAngle(const Position2D& pivot, float angle) const
 {
-	return pivot + (*this - pivot).rotate(Position::forAngle(angle));
+	return pivot + (*this - pivot).rotate(Position2D::forAngle(angle));
 }

@@ -2,40 +2,40 @@
 
 #include "math.h"
 
-#define pos(__X__,__Y__) PositionMake((float)(__X__), (float)(__Y__))
-#define PositionMake(x, y) Position((float)(x), (float)(y))
+#define pos2D(__X__,__Y__) PositionMake2D((float)(__X__), (float)(__Y__))
+#define PositionMake2D(x, y) Position2D((float)(x), (float)(y))
 #define FLT_EPSILON     1.192092896e-07F        /* smallest such that 1.0+FLT_EPSILON != 1.0 */
 
-class Position
+class Position2D
 {
 public:
     float x;
     float y;
 
 public:
-    Position();
+    Position2D();
 
-    Position(float x, float y);
+    Position2D(float x, float y);
 
-    Position(const Position& other);
+    Position2D(const Position2D& other);
 
-    Position& operator= (const Position& other);
+    Position2D& operator= (const Position2D& other);
 
-    Position operator+(const Position& right) const;
+    Position2D operator+(const Position2D& right) const;
 
-    Position operator-(const Position& right) const;
+    Position2D operator-(const Position2D& right) const;
 
-    Position operator-() const;
+    Position2D operator-() const;
 
-    Position operator*(float a) const;
+    Position2D operator*(float a) const;
 
-    Position operator/(float a) const;
+    Position2D operator/(float a) const;
    
     void SetPoint(float x, float y);
 
-    bool Equals(const Position& target) const;
+    bool Equals(const Position2D& target) const;
     
-    bool FuzzyEquals(const Position& target, float variance) const;
+    bool FuzzyEquals(const Position2D& target, float variance) const;
 
     inline float getLength() const {
         return sqrtf(x*x + y*y);
@@ -45,11 +45,11 @@ public:
         return dot(*this); //x*x + y*y;
     };
 
-    inline float getDistanceSq(const Position& other) const {
+    inline float getDistanceSq(const Position2D& other) const {
         return (*this - other).getLengthSq();
     };
 
-    inline float getDistance(const Position& other) const {																	//这个常用计算两个点之间的距离;
+    inline float getDistance(const Position2D& other) const {																	//这个常用计算两个点之间的距离;
         return (*this - other).getLength();
     };
 
@@ -57,10 +57,10 @@ public:
         return atan2f(y, x);
     };
 
-    float getAngle(const Position& other) const;																					//这个是得到两个点之间的角度;
+    float getAngle(const Position2D& other) const;																					//这个是得到两个点之间的角度;
 
 
-    inline float dot(const Position& other) const {																				//点乘算法 注意:这个函数是计算两个向量之间的夹角,如果返回值为正数 那么两向量之间内角小于90°,如果为负数 那么两个向量之间的内角大于90° 内角:是指两个向量之间小于180°的角;
+    inline float dot(const Position2D& other) const {																				//点乘算法 注意:这个函数是计算两个向量之间的夹角,如果返回值为正数 那么两向量之间内角小于90°,如果为负数 那么两个向量之间的内角大于90° 内角:是指两个向量之间小于180°的角;
         return x*other.x + y*other.y;
     };
 
@@ -68,7 +68,7 @@ public:
      @return float
      @since v2.1.4
      */
-    inline float cross(const Position& other) const {																			//叉乘算法 目前只知道有个应用是3D渲染里面,判断面是否是在背面就不用渲染,这个算法大概的意思是,根据两个向量得到 另外一个纬度的长度值(以后来学习这里先搬了);
+    inline float cross(const Position2D& other) const {																			//叉乘算法 目前只知道有个应用是3D渲染里面,判断面是否是在背面就不用渲染,这个算法大概的意思是,根据两个向量得到 另外一个纬度的长度值(以后来学习这里先搬了);
         return x*other.y - y*other.x;
     };
 
@@ -76,23 +76,23 @@ public:
      @return CCPoint
      @since v2.1.4
      */
-    inline Position getPerp() const {
-        return Position(-y, x);
+    inline Position2D getPerp() const {
+        return Position2D(-y, x);
     };
 
     /** Calculates perpendicular of v, rotated 90 degrees clockwise -- cross(v, rperp(v)) <= 0
      @return CCPoint
      @since v2.1.4
      */
-    inline Position getRPerp() const {
-        return Position(y, -x);
+    inline Position2D getRPerp() const {
+        return Position2D(y, -x);
     };
 
     /** Calculates the projection of this over other.
      @return CCPoint
      @since v2.1.4
      */
-    inline Position project(const Position& other) const {
+    inline Position2D project(const Position2D& other) const {
         return other * (dot(other)/other.dot(other));
     };
 
@@ -101,8 +101,8 @@ public:
      and a length of this.getLength() * other.getLength().
      @since v2.1.4
      */
-    inline Position rotate(const Position& other) const {
-        return Position(x*other.x - y*other.y, x*other.y + y*other.x);
+    inline Position2D rotate(const Position2D& other) const {
+        return Position2D(x*other.x - y*other.y, x*other.y + y*other.x);
     };
 
     /** Unrotates two points.
@@ -110,8 +110,8 @@ public:
      and a length of this.getLength() * other.getLength().
      @since v2.1.4
      */
-    inline Position unrotate(const Position& other) const {
-        return Position(x*other.x + y*other.y, y*other.x - x*other.y);
+    inline Position2D unrotate(const Position2D& other) const {
+        return Position2D(x*other.x + y*other.y, y*other.x - x*other.y);
     };
 
     /** Returns point multiplied to a length of 1.
@@ -119,9 +119,9 @@ public:
      @return CCPoint
      @since v2.1.4
      */
-    inline Position normalize() const {
+    inline Position2D normalize() const {
         float length = getLength();
-        if(length == 0.) return Position(1.f, 0);
+        if(length == 0.) return Position2D(1.f, 0);
         return *this / getLength();
     };
 
@@ -132,7 +132,7 @@ public:
         otherwise a value between a..b
      @since v2.1.4
      */
-    inline Position lerp(const Position& other, float alpha) const {
+    inline Position2D lerp(const Position2D& other, float alpha) const {
         return *this * (1.f - alpha) + other * alpha;
     };
 
@@ -142,10 +142,10 @@ public:
      @returns the rotated point
      @since v2.1.4
      */
-    Position rotateByAngle(const Position& pivot, float angle) const;
+    Position2D rotateByAngle(const Position2D& pivot, float angle) const;
 
-    static inline Position forAngle(const float a)
+    static inline Position2D forAngle(const float a)
     {
-    	return Position(cosf(a), sinf(a));
+    	return Position2D(cosf(a), sinf(a));
     }
 };
