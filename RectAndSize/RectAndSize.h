@@ -3,6 +3,9 @@
 #include "LeeConfig.h"
 #include "Position.h"
 
+#define Size2DMake(width, height) Size2D((float)(width), (float)(height))
+#define Rect2DMake(x, y, width, height) Rect2D((float)(x), (float)(y), (float)(width), (float)(height))
+
 class Size2D
 {
 public:
