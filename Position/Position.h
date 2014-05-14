@@ -37,30 +37,30 @@ public:
     
     bool FuzzyEquals(const Position2D& target, float variance) const;
 
-    inline float getLength() const {
+    inline float GetLength() const {
         return sqrtf(x*x + y*y);
     };
 
-    inline float getLengthSq() const {
-        return dot(*this); //x*x + y*y;
+    inline float GetLengthSq() const {
+        return Dot(*this); //x*x + y*y;
     };
 
-    inline float getDistanceSq(const Position2D& other) const {
-        return (*this - other).getLengthSq();
+    inline float GetDistanceSq(const Position2D& other) const {
+        return (*this - other).GetLengthSq();
     };
 
-    inline float getDistance(const Position2D& other) const {																	//这个常用计算两个点之间的距离;
-        return (*this - other).getLength();
+    inline float GetDistance(const Position2D& other) const {																	//这个常用计算两个点之间的距离;
+        return (*this - other).GetLength();
     };
 
-    inline float getAngle() const {																										//这个是得到自己和1,0 点之间的角度,得到这个点的角度 2PI 就是数学方式的360°;
+    inline float GetAngle() const {																										//这个是得到自己和1,0 点之间的角度,得到这个点的角度 2PI 就是数学方式的360°;
         return atan2f(y, x);
     };
 
-    float getAngle(const Position2D& other) const;																					//这个是得到两个点之间的角度;
+    float GetAngle(const Position2D& other) const;																					//这个是得到两个点之间的角度;
 
 
-    inline float dot(const Position2D& other) const {																				//点乘算法 注意:这个函数是计算两个向量之间的夹角,如果返回值为正数 那么两向量之间内角小于90°,如果为负数 那么两个向量之间的内角大于90° 内角:是指两个向量之间小于180°的角;
+    inline float Dot(const Position2D& other) const {																				//点乘算法 注意:这个函数是计算两个向量之间的夹角,如果返回值为正数 那么两向量之间内角小于90°,如果为负数 那么两个向量之间的内角大于90° 内角:是指两个向量之间小于180°的角;
         return x*other.x + y*other.y;
     };
 
@@ -68,7 +68,7 @@ public:
      @return float
      @since v2.1.4
      */
-    inline float cross(const Position2D& other) const {																			//叉乘算法 目前只知道有个应用是3D渲染里面,判断面是否是在背面就不用渲染,这个算法大概的意思是,根据两个向量得到 另外一个纬度的长度值(以后来学习这里先搬了);
+    inline float Cross(const Position2D& other) const {																			//叉乘算法 目前只知道有个应用是3D渲染里面,判断面是否是在背面就不用渲染,这个算法大概的意思是,根据两个向量得到 另外一个纬度的长度值(以后来学习这里先搬了);
         return x*other.y - y*other.x;
     };
 
@@ -93,7 +93,7 @@ public:
      @since v2.1.4
      */
     inline Position2D project(const Position2D& other) const {
-        return other * (dot(other)/other.dot(other));
+        return other * (Dot(other)/other.Dot(other));
     };
 
     /** Complex multiplication of two points ("rotates" two points).
@@ -120,9 +120,9 @@ public:
      @since v2.1.4
      */
     inline Position2D normalize() const {
-        float length = getLength();
+        float length = GetLength();
         if(length == 0.) return Position2D(1.f, 0);
-        return *this / getLength();
+        return *this / GetLength();
     };
 
     /** Linear Interpolation between two points a and b

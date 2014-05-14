@@ -69,11 +69,11 @@ bool Position2D::FuzzyEquals(const Position2D& b, float var) const
 	return false;
 }
 
-float Position2D::getAngle(const Position2D& other) const
+float Position2D::GetAngle(const Position2D& other) const
 {
 	Position2D a2 = normalize();
 	Position2D b2 = other.normalize();
-	float angle = atan2f(a2.cross(b2), a2.dot(b2));
+	float angle = atan2f(a2.Cross(b2), a2.Dot(b2));
 	if( fabs(angle) < FLT_EPSILON ) return 0.f;
 	return angle;
 }
