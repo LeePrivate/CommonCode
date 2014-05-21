@@ -44,19 +44,25 @@ void Log::Write(const char* msg)
 
 	if (_bAddTimestamp)
 	{
-		struct tm* pTime = NULL;
 		time_t ctTime;
 		time(&ctTime);							//得到时间;
-		localtime_s(pTime, &ctTime);		//转换为tm格式时间;
-		if (pTime)
-		{
-			_File << std::setw(2) <<std::setfill('0') << pTime->tm_hour
-				<< ":" << std::setw(2) <<std::setfill('0') << pTime->tm_min
-				<< ":" << std::setw(2) << std::setfill('0') << pTime->tm_sec
-				<< ":";
-		}
+
+		struct tm stTime;
+		localtime_s(&stTime, &ctTime);		//转换为tm格式时间;
+	
+		//char tmpTime[32];
+		//asctime_s(tmpTime, &stTime);    //这个是转换为标准格式 如: Wed May 21 20:31:29 2014 ;
+
+		//自定义格式
+		_File<< stTime.tm_year + 1900 << "/"																//年 since 1900
+			<< stTime.tm_mon + 1 << "/"																		//月 0 - 11
+			<< stTime.tm_mday << " "																			//日 1 - 31
+			<< std::setw(2) <<std::setfill('0') << stTime.tm_hour										//小时
+			<< ":" << std::setw(2) <<std::setfill('0') << stTime.tm_min							//分
+			<< ":" << std::setw(2) << std::setfill('0') << stTime.tm_sec							//秒
+			<< " : ";
 	}
-	_File << msg << std::endl;
+	_File << msg << endl;
 	//_File.flush();   //这个不需要了, 在遇到std::endl控制字符的时候 flush 就被调用了;
 }
 
