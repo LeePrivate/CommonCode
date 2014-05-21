@@ -37,7 +37,7 @@ void Log::Write(const char* msg)
 
 	if (_bDebugPrint)
 	{
-#if defined(_DEBUG) || defined(DEBUG)			//Linux 下是定义的 DEBUG;
+#if defined(_DEBUG) || defined(DEBUG)			//Linux 下是定义的 DEBUG,如果是debug模式那么在控制台也输出一次信息;
 		printf("%s\n", msg);
 #endif
 	}
@@ -70,7 +70,7 @@ void Log::Update()
 LogMgr::LogMgr()
 {
 	_DefaultLog = NULL;
-	AddLog("Log");
+	AddLog("DefaultLog");
 }
 
 LogMgr::~LogMgr()
@@ -105,7 +105,7 @@ void LogMgr::AddLog(Log* log)
 // 	}
 }
 
-void LogMgr::WriteLog(const string& fileName, const char* format, ...)
+void LogMgr::WriteSpecifyLog(const string& fileName, const char* format, ...)
 {
 	LogMap::iterator iter = _mapLog.find(fileName);
 	if (iter == _mapLog.end())
