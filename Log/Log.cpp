@@ -108,11 +108,16 @@ void LogMgr::AddLog(Log* log)
 void LogMgr::WriteSpecifyLog(const string& fileName, const char* format, ...)
 {
 	LogMap::iterator iter = _mapLog.find(fileName);
-	if (iter == _mapLog.end())
+	while (iter == _mapLog.end())
 	{
-		assert(false);
-		return;
+		//如果这个指定的日志文件不存在,那么就创建一个,
+		//由于在LogMgr类初始化的时候就已经有一个Log加入到LogMap里面作为默认日志文件纯在了
+		//所以这个指定的文件一定不会是默认日志文件,输出的时候要用SpecityLog宏
+		//输出不成功的话就肯定有问题,检查!;
+		AddLog(fileName);
+		iter = _mapLog.find(fileName);
 	}
+
 	char msgBuf[s_MaxLogLen] = {'\0'};
 
 	va_list args;
