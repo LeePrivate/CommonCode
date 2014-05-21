@@ -26,7 +26,7 @@ class LogOpt											//日志配置(现在这个完全没用到);
 class Log
 {
 public:
-	Log(const string& FileName, std::ios::openmode OpenMode = ios::out, bool AddTimestamp = true, bool DebugPrint = true);
+	Log(const string& FileName, std::ios::openmode OpenMode = ios::app, bool AddTimestamp = true, bool DebugPrint = true);		//ios::out 如果有文件就删除重建, ios::app 有文件就从后面添加;
 
 	virtual ~Log();
 
@@ -54,7 +54,7 @@ public:
 
 	void AddLog(Log* log);								//添加日志;
 
-	void AddLog(const string& fileName, std::ios::openmode openMode = ios::out, bool addTimestamp = true, bool debugPrint = true);		//添加日志;
+	void AddLog(const string& fileName, std::ios::openmode openMode = ios::app, bool addTimestamp = true, bool debugPrint = true);		//添加日志 ios::out 如果有文件就删除重建, ios::app 有文件就从后面添加;
 
 	void WriteSpecifyLog(const string& fileName, const char* format, ...);			//记录日志(指定文件,需要在之前Add一个Log 到 Log Map 中);
 
@@ -79,6 +79,6 @@ protected:
 #define DefaultLog(...) LogMgr::GetSingle().WriteDefaultLog(__VA_ARGS__)
 
 //输出到指定日志,需要给出文件名,并且在输出之前要已经Add到 Log map 中;
-#define SpecifyLog(_LOG_NAME_, ...) LogMgr.GetSingle().WriteSpecifyLog(_LOG_NAME_, __VA_ARGS__)
+#define SpecifyLog(_LOG_NAME_, ...) LogMgr::GetSingle().WriteSpecifyLog(_LOG_NAME_, __VA_ARGS__)
 
 

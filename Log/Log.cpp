@@ -1,6 +1,6 @@
 #include "Log.h"
 
-Log::Log(const string& FileName, std::ios::openmode OpenMode /*= ios::out*/, bool AddTimestamp /*= true*/, bool DebugPrint /*= true*/)
+Log::Log(const string& FileName, std::ios::openmode OpenMode /*= ios::app*/, bool AddTimestamp /*= true*/, bool DebugPrint /*= true*/)
 {
 	_FileName = FileName;
 #ifdef WIN32
@@ -76,7 +76,7 @@ void Log::Update()
 LogMgr::LogMgr()
 {
 	_DefaultLog = NULL;
-	AddLog("DefaultLog");
+	AddLog("DefaultLog.txt");
 }
 
 LogMgr::~LogMgr()
@@ -88,7 +88,7 @@ LogMgr::~LogMgr()
 	_mapLog.clear();
 }
 
-void LogMgr::AddLog(const string& fileName, std::ios::openmode openMode /*= ios::out*/, bool addTimestamp /*= true*/, bool debugPrint /*= true*/)
+void LogMgr::AddLog(const string& fileName, std::ios::openmode openMode /*= ios::app*/, bool addTimestamp /*= true*/, bool debugPrint /*= true*/)
 {
 	_mapLog[fileName] = new Log(fileName, openMode, addTimestamp, debugPrint);
 	if (_mapLog.size() == 1)
