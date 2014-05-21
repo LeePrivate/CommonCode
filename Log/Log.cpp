@@ -88,51 +88,30 @@ LogMgr::~LogMgr()
 	_mapLog.clear();
 }
 
-void LogMgr::AddLog(const string& fileName, std::ios::openmode openMode /*= ios::app*/, bool addTimestamp /*= true*/, bool debugPrint /*= true*/)
+string LogMgr::AddLog(string fileName, std::ios::openmode openMode /*= ios::app*/, bool addTimestamp /*= true*/, bool debugPrint /*= true*/)
 {
+	VerifyFileName(fileName);
 	_mapLog[fileName] = new Log(fileName, openMode, addTimestamp, debugPrint);
 	if (_mapLog.size() == 1)
 	{
 		_DefaultLog = _mapLog[fileName];
 	}
+	return fileName;
 }
 
-void LogMgr::AddLog(Log* log)
-{
-	if (NULL == log)
-	{
-		assert(false);
-		return;
-	}
-	_mapLog[log->GetFileName()] = log;
-// 	if (_mapLog.size() == 1)						//LogMgr 初始化的时候就会add一个log作为默认的,这里就不需要再判断了;
+// void LogMgr::AddLog(Log* log)
+// {
+// 	if (NULL == log)
 // 	{
-// 		_DefaultLog = log;
+// 		assert(false);
+// 		return;
 // 	}
-}
-
-void LogMgr::WriteSpecifyLog(const string& fileName, const char* format, ...)
-{
-	LogMap::iterator iter = _mapLog.find(fileName);
-	while (iter == _mapLog.end())
-	{
-		//如果这个指定的日志文件不存在,那么就创建一个,
-		//由于在LogMgr类初始化的时候就已经有一个Log加入到LogMap里面作为默认日志文件纯在了
-		//所以这个指定的文件一定不会是默认日志文件,输出的时候要用SpecityLog宏
-		//输出不成功的话就肯定有问题,检查!;
-		AddLog(fileName);
-		iter = _mapLog.find(fileName);
-	}
-
-	char msgBuf[s_MaxLogLen] = {'\0'};
-
-	va_list args;
-	va_start(args, format);
-	vsprintf_s(msgBuf, format, args);
-	va_end(args);
-
-	iter->second->Write(msgBuf);
-}
+// 	_mapLog[log->GetFileName()] = log;
+// // 	if (_mapLog.size() == 1)						//LogMgr 初始化的时候就会add一个log作为默认的,这里就不需要再判断了;
+// // 	{
+// // 		_DefaultLog = log;
+// // 	}
+// }
 
 void LogMgr::WriteDefaultLog(const char* format, ...)
 {
@@ -152,6 +131,29 @@ void LogMgr::WriteDefaultLog(const char* format, ...)
 	_DefaultLog->Write(msgBuf);
 }
 
+void LogMgr::WriteSpecifyLog(string fileName, const char* format, ...)
+{
+	LogMap::iterator iter = _mapLog.find(fileName);
+	while (iter == _mapLog.end())
+	{
+		//如果这个指定的日志文件不存在,那么就创建一个,
+		//由于在LogMgr类初始化的时候就已经有一个Log加入到LogMap里面作为默认日志文件纯在了
+		//所以这个指定的文件一定不会是默认日志文件,输出的时候要用SpecityLog宏
+		//输出不成功的话就肯定有问题,检查!;
+		//注意!!!再次寻找的文件名是 AddLog返回的文件名,应为有改变文件名的情况出现.列入,输入文件名时忘记后缀,在Add的时候就会加上;
+		iter = _mapLog.find(AddLog(fileName));
+	}
+
+	char msgBuf[s_MaxLogLen] = {'\0'};
+
+	va_list args;
+	va_start(args, format);
+	vsprintf_s(msgBuf, format, args);
+	va_end(args);
+
+	iter->second->Write(msgBuf);
+}
+
 bool LogMgr::SetDefaultLog(const string& fileName)
 {
 	LogMap::iterator iter = _mapLog.find(fileName);
@@ -168,5 +170,14 @@ void LogMgr::Updata()
 	for (LogMap::iterator iter = _mapLog.begin() ; iter != _mapLog.end() ; ++iter)
 	{
 		iter->second->Update();
+	}
+}
+
+void LogMgr::VerifyFileName(string& fileName)
+{
+	size_t tmpPos = fileName.find(".txt");
+	if (tmpPos == fileName.npos)
+	{
+		fileName += ".txt";
 	}
 }

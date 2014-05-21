@@ -9,6 +9,8 @@
  *使用方法:包含头文件以后,直接在要输出日志的地方使用定义的宏,如下
  *输出到默认的日志文件 DefaultLog("%s output &d", char, int);
  *输出到指定文件名的日志(比如登录信息可以单独用一个文件来存放之类的) SpecityLog("文件名","%s output &d", char, int );
+ *
+ *注意: 每个日志文件,在Log类创建的时候就已经按照默认app方式打开了;
  */
 
 #pragma once
@@ -42,7 +44,7 @@ protected:
 	bool		_bAddTimestamp;			//是否使用时间戳;
 	bool		_bDebugPrint;				//是否是Debug模式 print;
 
-//todo:增加缓冲模式,达到一定量的日志量或则一定时间间隔,才真正写入硬盘,减少硬盘IO次数;
+//todo:增加缓冲模式,达到一定量的日志量或则一定时间间隔,才真正写入硬盘,减少硬盘IO次数(以后来写);
 };
 
 class LogMgr												//日志管理
@@ -52,17 +54,19 @@ public:
 
 	~LogMgr();
 
-	void AddLog(Log* log);								//添加日志;
+	//void AddLog(Log* log);								//添加日志(去掉这种添加日志的方式使用最简便最人性化的方式,统一方式);
 
-	void AddLog(const string& fileName, std::ios::openmode openMode = ios::app, bool addTimestamp = true, bool debugPrint = true);		//添加日志 ios::out 如果有文件就删除重建, ios::app 有文件就从后面添加;
-
-	void WriteSpecifyLog(const string& fileName, const char* format, ...);			//记录日志(指定文件,需要在之前Add一个Log 到 Log Map 中);
+	string AddLog(string fileName, std::ios::openmode openMode = ios::app, bool addTimestamp = true, bool debugPrint = true);		//添加日志 ios::out 如果有文件就删除重建, ios::app 有文件就从后面添加 函数返回正真添加进LogMap的文件名, 应为会有改变文件名的情况;
 
 	void WriteDefaultLog(const char* format, ...);			//记录日志到默认Log;
+
+	void WriteSpecifyLog(string fileName, const char* format, ...);			//记录日志(指定文件,需要在之前Add一个Log 到 Log Map 中);
 
 	bool SetDefaultLog(const string& fileName);			//设置默认日志;
 
 	void Updata();		//更新;
+
+	void VerifyFileName(string& fileName);						//在加入新日志文件时验证日志文件名,如果没有加.txt,会自动加上,以防忘记写文件名后缀的情况;
 
 	SINGLE_MODE(LogMgr);							
 
