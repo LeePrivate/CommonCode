@@ -62,3 +62,10 @@ public: virtual void Set##funName(varType var){ varName = var; }
 
 #define BZERO(b,len) (memset((b), 0, (len)), (void) 0)
 
+#if !defined( SAFE_DELETE )
+#define SAFE_DELETE( p ) if( ( p ) ) { delete ( p ); ( p ) = 0; }
+#endif
+
+#if !defined( SAFE_DELETE_ARRAY )
+#define SAFE_DELETE_ARRAY( p ) if( ( p ) ) { delete []( p ); ( p ) = 0; }
+#endif
