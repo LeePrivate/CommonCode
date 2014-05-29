@@ -557,7 +557,7 @@ inline BaseStream& operator >> (BaseStream& is, T& data)
 	return is;
 }
 
-//vector序列化
+//vector序列化 我觉得BaseStream 应该改为实际使用的子类,用到来改;
 template<typename T>
 inline BaseStream& operator << (BaseStream& os, const std::vector<T>& data)  //这个函数我觉得有点问题,应为BaseStream << >>操作符 里面的Serialize和Deserialize函数是纯虚的,下面这一系列的函数模版我觉得都应该使用继承于BaseStream的类来做左操作数以后使用的时候再来研究有问题再改;
 {
@@ -584,7 +584,7 @@ inline BaseStream& operator >> (BaseStream& is, std::vector<T>& data)
 	return is;
 }
 
-//map 序列化;
+//map 序列化 我觉得BaseStream 应该改为实际使用的子类,用到来改;;
 template<typename K, typename V>
 inline BaseStream& operator << (BaseStream& os, const std::map<K, V>& data)
 {
@@ -637,11 +637,114 @@ public:
 	//指针接口;
 	virtual uint8* GetBuffer() const;
 
+	uint8* GetOffsetPointer();
 
+	void ResetPointer();
 
+	void SetBuffer(uint8* pBuffer, size_t size);
+
+	//数据流中间设置数据;
+	bool SetData(size_t pos, const void* data, size_t size);
+
+	//偏移向前;
+	bool Ignore(size_t size);
+
+	//实现父类纯虚 序列化 is << data;
+	virtual BaseStream& BytesSerialize(const void* data, size_t size);
+
+	//实现父类纯虚 反序列化 os >> data;
+	virtual BaseStream& BytesDeserialize(void* data, size_t size);
+
+	//序列化自己;
+	virtual void Serialize(BaseStream& streamTo) const;
+
+	//反序列化自己;
+	virtual void Deserialize(BaseStream& streamForm);
 
 protected:
 	uint8*	_Buffer;							//起始地址;
 	uint8*	_Pointer;						//当前地址;
 	size_t	_Size;							//总大小;
 };
+
+//固定大小的缓存流;
+template<uint32 bufferSize>
+class BufferStream : public Stream
+{
+public:
+	BufferStream()
+		:Stream(_MemBuffer, bufferSize)
+	{
+		memset(_MemBuffer, 0, sizeof(_MemBuffer));
+	}
+
+	virtual ~BufferStream();
+
+protected:
+	uint8 _MemBuffer[bufferSize];
+};
+
+//动态大小的数据流;
+class StringStream : public BaseStream
+{
+public:
+	StringStream();
+
+	virtual ~StringStream();
+
+	//偏移;
+	virtual size_t GetOffset() const;
+
+	//总大小;
+	virtual size_t GetSize() const;
+
+	string& GetBuffer();
+
+	const string& GetBuffer() const;
+
+	void ResetOffset();
+
+	//数据流的中间设置数据;
+	bool SetData(size_t pos, const void* data, size_t size);
+
+	//序列化 is << data;
+	virtual BaseStream& BytesSerialize(const void* data, size_t size);
+
+	//反序列化 os >> data;
+	virtual BaseStream& BytesDeserialize(void* data, size_t size);
+
+protected:
+	string	_strBuffer;
+	size_t	_Offset;
+};
+
+//宏
+//1个成员变量;
+#define SERIALIZE_STRUCT_1(structName, atgType1, arg1)\
+struct structName\
+{\
+	argType1 arg1;\
+	virtual void Serialize(BaseStream& os) const		{os << arg1;}\
+	virtual void Deserialize(BaseStream& is)		{is >> arg1;}\
+}
+
+//2个成员变量;
+#define SERIALIZE_STRUCT_2(structName, argType1, arg1, argType2, arg2)\
+struct structName\
+{\
+	argType1 arg1;\
+	argType2 arg2;\
+	virtual void Serialize(BaseStream& os) const		{os << arg1 << arg2;}\
+	virtual void Deserialize(BaseStream& is)		{is >> arg1 >> arg2;}\
+}
+
+//3个成员变量;
+#define SERIALIZE_STRUCT_3( structName, argType1, arg1, argType2, arg2, argType3, arg3 )\
+struct structName\
+{\
+	argType1 arg1;\
+	argType2 arg2;\
+	argType3 arg3;\
+	virtual void Serialize( BaseStream& os ) const		{ os << arg1 << arg2 << arg3; }\
+	virtual void Deserialize( BaseStream& is ) 			{ is >> arg1 >> arg2 >> arg3; }\
+}
