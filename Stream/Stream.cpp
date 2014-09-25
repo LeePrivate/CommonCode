@@ -43,7 +43,8 @@ Stream::Stream(size_t size)
 
 Stream::~Stream(void)
 {
-
+	//这里是否应该加上这句,以免忘记手动调用,以后来确认;
+	//ReleaseBuffer();
 }
 
 void Stream::ReleaseBuffer()
