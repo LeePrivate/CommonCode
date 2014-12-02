@@ -155,6 +155,11 @@ void Stream::Deserialize(BaseStream& streamForm)
 	//这里我觉得有问题 ,这样本stream 的_Point 就没有变动,应该要加上这个dataSize吧,以后发现错误来改;
 }
 
+uint8* Stream::GetBuffer() const
+{
+	return _Buffer;
+}
+
 
 StringStream::StringStream()
 	:_Offset(0)

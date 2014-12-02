@@ -15,7 +15,7 @@
 #pragma once
 
 #include "LeeConfig.h"
-#include "tinyxml.h"
+#include "Tinyxml/tinyxml.h"
 #include <boost/filesystem.hpp>																													//Boost FileSystem header file;
 #include <boost/locale/encoding.hpp>																										//Boost code conversion header file;
 

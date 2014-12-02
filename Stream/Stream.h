@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "Guid.h"
-#include "TypeConvert.h"
+#include "Guid/Guid.h"
+#include "TypeConvert/TypeConvert.h"
 
 //´íÎóÃ¶¾Ù;
 typedef enum
