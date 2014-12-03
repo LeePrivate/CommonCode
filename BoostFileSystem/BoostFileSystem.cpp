@@ -147,7 +147,7 @@ void BoostCodeConversion::ConvertUtf8ToGbk_Boost(string& strUtf8)
 	strUtf8 = boost::locale::conv::between(strUtf8,"GBK", "UTF-8");
 }
 
-#if defined _WIN32 || defined _WIN64
+#if TARGET_PLATFORM == PLATFORM_WINDOWS
 
 void BoostCodeConversion::ConvertGbkToUtf8_WIN( string& strGBK )																					
 {

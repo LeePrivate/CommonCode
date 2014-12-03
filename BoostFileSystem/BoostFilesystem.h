@@ -4,7 +4,7 @@
  * \author LEE
  * \date 五月 2014
  *使用说明:
- *该组件使用boost库来达到文件的查找,验证,转换文件编码等工作;
+ *该组件使用boost库来达到文件的查找,验证,转换文件编码等工作(目前该组件服务于tmx, 也就是 tilemap 生成的文件的分析读取 ,有其他类型文件请添加功能);
  *使用时 需要在工作目录建立Config文件夹,其中建立 XmlConvertConfig.xml 配置文件,其中给出读取文件的路径,和要保存的目的地路径;
  *
  *使用步骤:
@@ -19,7 +19,7 @@
 #include <boost/filesystem.hpp>																													//Boost FileSystem header file;
 #include <boost/locale/encoding.hpp>																										//Boost code conversion header file;
 
-#if defined  _WIN32 || defined _WIN64																										//Platform define 32bit or 64bit;
+#if TARGET_PLATFORM == PLATFORM_WINDOWS																						//Platform define 32bit or 64bit;
 #include <Windows.h>
 #endif
 
@@ -75,7 +75,7 @@ public:
 
 	void ConvertUtf8ToGbk_Boost(string& strUtf8);
 
-#if defined _WIN32 || defined _WIN64
+#if TARGET_PLATFORM ==  PLATFORM_WINDOWS
 
 	void ConvertGbkToUtf8_WIN( string& strGBK );
 
