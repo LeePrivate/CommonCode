@@ -11,14 +11,14 @@
 *********************************************************************/
 #pragma once
 
-#include "UtilConfig.h"
+#include "LeeConfig.h"
 #include <boost/algorithm/string.hpp>
 
 
 
 typedef vector<string> StringVec;
 
-class Util_EXPORTS StringUtil
+class StringUtil
 {
 public:
 	typedef std::stringstream StrStreamType;
@@ -62,20 +62,42 @@ public:
 	//编码转换;
 	static bool CodeConvert( const char* fromCharSet, const char* toCharSet, char* inBuf, size_t inLen, char* outBuf, size_t outLen );
 
+	
+	//去除字符串中指定的字符,注意只能是一个字符;
+	static void StringOffSpecial(string& srcStr,  char c);
+
 	//去除字符串开头或结尾几个字符 (srcString 原字符串, IsFront true 为从前面去除Len个,false 为从后面去除len个);
 	static void StringOff(string& srcString, bool IsFront, char len);
+
+	//从原字符串开头去除给出的字符之前的字符串;
+	static void StringUtil::StringOff( string& srcStr, string off);
 
 	//去除字符串开头或结尾几个字符(就是上面这个函数的结果返回版本);
 	static string StringOffRet(string& srcString, bool IsFront, char len);
 
+
 	//string转换为数字(atoi);
 	static int Atoi(string& srcString);
+
+	//string转换为数字(atof);
+	static double Atof(string& srcStr);
 
 	//数字转换为string(itoa);
 	static string Itoa(int& num);
 
+
 	//检查字符串是否含有sql关键字,防止sql注入;
 	static bool IsContainSqlSpecialChar( const string& str );
+
+
+	//从开始读取字符串,到某个特定字符为止,并返回读取的部分,不包括 to 字符,原字符串不变;
+	static string ReadToFront(const string& srcStr, const string to);
+
+	//从开始读取字符串,到某个特定字符为止,并返回该字符后面的部分, 包括 to 字符原字符不变;
+	static string ReadToBack(const string& srcStr, const string to);
+
+	//从开始读取字符串,到某个特定字符为止,并返回读取的部分,不包括 to 字符,原字符串删除已读取部分;
+	static string ReadToFrontOff(string& srcStr, const string to);
 
 };
 

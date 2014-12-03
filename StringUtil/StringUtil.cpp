@@ -1,4 +1,4 @@
-#include "../Include/StringUtil.h"
+#include "StringUtil.h"
 
 void StringUtil::Trim( string& str, bool left /* = true */, bool right /* = true */ )
 {
@@ -216,7 +216,7 @@ bool StringUtil::CodeConvert( const char* fromCharSet, const char* toCharSet,
 		assert( false );
 		return false;
 	}
-#if TARGET_PLATFORM == PLATFORM_WIN
+#if TARGET_PLATFORM == PLATFORM_WINDOWS
 	//需要windows版本的iconv库;
 #else
 	char** pin = &inBuf;
@@ -247,6 +247,21 @@ bool StringUtil::IsContainSqlSpecialChar( const string& str )
 	return false;
 }
 
+void StringUtil::StringOffSpecial( string& srcStr, char c)
+{
+	//这里之所以要再次赋值用临时变量是为了防止原srcStr的迭代器失效而报错的情况,以后再来研究为什么在外层做了一些操作以后迭代器会失效;
+	string tmpStr = srcStr;
+	for (string::iterator it = tmpStr.begin() ; it != tmpStr.end(); ++it)
+	{
+		if (*it == c)
+		{
+			tmpStr.erase(it);
+			srcStr = tmpStr;
+			return;
+		}
+	}
+}
+
 void StringUtil::StringOff( string& srcString, bool IsFront, char len )
 {
 	if (IsFront)
@@ -257,6 +272,11 @@ void StringUtil::StringOff( string& srcString, bool IsFront, char len )
 	{
 		srcString = srcString.substr(0,srcString.length()-len);
 	}
+}
+
+void StringUtil::StringOff( string& srcString, string off)
+{
+	srcString = srcString.substr(srcString.find(off), srcString.length());
 }
 
 string StringUtil::StringOffRet( string& srcString, bool IsFront, char len )
@@ -277,11 +297,37 @@ int StringUtil::Atoi( string& srcString )
 	return atoi(srcString.c_str());
 }
 
+
+double StringUtil::Atof( string& srcStr )
+{
+	return atof(srcStr.c_str());
+}
+
 std::string StringUtil::Itoa( int& num )
 {
 	char szTmp[10] = {0};
 	_itoa_s(num, szTmp, 10);
 	return szTmp;
 }
+
+std::string StringUtil::ReadToFront( const string& srcStr, const string to )
+{
+	return srcStr.substr(0, srcStr.find(to));
+}
+
+std::string StringUtil::ReadToBack(const string& srcStr, const string to )
+{
+	return srcStr.substr(srcStr.find(to));
+}
+
+std::string StringUtil::ReadToFrontOff( string& srcStr, const string to )
+{
+	string tmpStr = srcStr.substr(0, srcStr.find(to));
+	srcStr = srcStr.substr(srcStr.find(to), srcStr.length());
+	return tmpStr;
+}
+
+
+
 
 
