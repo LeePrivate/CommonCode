@@ -11,7 +11,7 @@
 *********************************************************************/
 #pragma once
 
-#include "LeeConfig.h"
+#include "../LeeConfig.h"
 #include <boost/algorithm/string.hpp>
 
 
@@ -23,17 +23,7 @@ class StringUtil
 public:
 	typedef std::stringstream StrStreamType;
 
-	//去除字符串左右两边的空格,回车;
-	static void Trim( string& str, bool left = true, bool right = true );
-
-	//分割字符串;
-	static std::vector<string> Split( const string& str, const string& delims = "\t\n", unsigned int maxSplits = 0 );
-
-	//转小写;
-	static void ToLowerCase( string& str );
-
-	//转大写;
-	static void ToUpperCase( string& str );
+	/*------------------------------------------------------------一般功能-----------------------------------------------------------------------------*/
 
 	//字符串首匹配;
 	static bool StartsWith( const string& str, const string& pattern, bool lowerCase = true );
@@ -62,7 +52,51 @@ public:
 	//编码转换;
 	static bool CodeConvert( const char* fromCharSet, const char* toCharSet, char* inBuf, size_t inLen, char* outBuf, size_t outLen );
 
+	//去除字符串左右两边的空格,回车;
+	static void Trim( string& str, bool left = true, bool right = true );
+
+	//分割字符串;
+	static std::vector<string> Split( const string& str, const string& delims = "\t\n", unsigned int maxSplits = 0 );
+
+	/*--------------------------------------------------------------大小写转换---------------------------------------------------------------------------*/;
+
+	//转小写(无返回,并改变源 str);
+	static void ToLowercase( string& str );
+
+	//转大写(无返回,并改变源 str);
+	static void ToUppercase( string& str );
+
+	//转小写(有返回,并不改变源 str);
+	static string ToLowercaseRet(const string& str);
+
+	//转大写(有返回,并不改变源 str);
+	static string ToUppercaseRet(const string& str);
+
+
+	/*--------------------------------------------------------------string 转换数字---------------------------------------------------------------------------*/;
+
+	//string转换为数字(atoi);
+	static int Atoi(string& srcString);
+
+	//string转换为数字(atof);
+	static double Atof(string& srcStr);
+
+	//数字转换为string(itoa);
+	static string Itoa(int& num);
+
+	/*--------------------------------------------------------------字符串特殊读取,删除---------------------------------------------------------------------------*/;
+
+	//从开始读取字符串,到某个特定字符为止,并返回读取的部分,不包括 to 字符,原字符串不变;
+	static string ReadToFront(const string& srcStr, const string to);
+
+	//从开始读取字符串,到某个特定字符为止,并返回该字符后面的部分, 包括 to 字符原字符不变;
+	static string ReadToBack(const string& srcStr, const string to);
+
+	//从开始读取字符串,到某个特定字符为止,并返回读取的部分,不包括 to 字符,原字符串删除已读取部分;
+	static string ReadToFrontOff(string& srcStr, const string to);
 	
+	/*--------------------------------------------------------------字符串中字符去除---------------------------------------------------------------------------*/;
+
 	//去除字符串中指定的字符,注意只能是一个字符;
 	static void StringOffSpecial(string& srcStr,  char c);
 
@@ -75,29 +109,10 @@ public:
 	//去除字符串开头或结尾几个字符(就是上面这个函数的结果返回版本);
 	static string StringOffRet(string& srcString, bool IsFront, char len);
 
-
-	//string转换为数字(atoi);
-	static int Atoi(string& srcString);
-
-	//string转换为数字(atof);
-	static double Atof(string& srcStr);
-
-	//数字转换为string(itoa);
-	static string Itoa(int& num);
-
+	/*--------------------------------------------------------------特殊作用---------------------------------------------------------------------------*/;
 
 	//检查字符串是否含有sql关键字,防止sql注入;
 	static bool IsContainSqlSpecialChar( const string& str );
-
-
-	//从开始读取字符串,到某个特定字符为止,并返回读取的部分,不包括 to 字符,原字符串不变;
-	static string ReadToFront(const string& srcStr, const string to);
-
-	//从开始读取字符串,到某个特定字符为止,并返回该字符后面的部分, 包括 to 字符原字符不变;
-	static string ReadToBack(const string& srcStr, const string to);
-
-	//从开始读取字符串,到某个特定字符为止,并返回读取的部分,不包括 to 字符,原字符串删除已读取部分;
-	static string ReadToFrontOff(string& srcStr, const string to);
 
 };
 

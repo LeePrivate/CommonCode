@@ -50,14 +50,24 @@ std::vector<string> StringUtil::Split( const string& str, const string& delims /
 	return ret;
 }
 
-void StringUtil::ToLowerCase( string& str )
+void StringUtil::ToLowercase( string& str )
 {
-	boost::to_lower(str);
+	boost::algorithm::to_lower(str);
 }
 
-void StringUtil::ToUpperCase( string& str )
+std::string StringUtil::ToLowercaseRet( const string& str )
 {
-	boost::to_upper(str);
+	return boost::algorithm::to_lower_copy(str);
+}
+
+void StringUtil::ToUppercase( string& str )
+{
+	boost::algorithm::to_upper(str);
+}
+
+std::string StringUtil::ToUppercaseRet( const string& str )
+{
+	return boost::algorithm::to_upper_copy(str);
 }
 
 bool StringUtil::StartsWith( const string& str, const string& pattern, bool lowerCase /* = true */ )
@@ -69,7 +79,7 @@ bool StringUtil::StartsWith( const string& str, const string& pattern, bool lowe
 
 	string startOfThis = str.substr( 0, patternLen );
 	if( lowerCase )
-		StringUtil::ToLowerCase(startOfThis);
+		StringUtil::ToLowercase(startOfThis);
 
 	return startOfThis == pattern;
 }
@@ -83,7 +93,7 @@ bool StringUtil::EndWith( const string& str, const string& pattern, bool lowerCa
 
 	string endOfThis = str.substr( thisLen - patternLen, patternLen );
 	if( lowerCase )
-		StringUtil::ToLowerCase(endOfThis);
+		StringUtil::ToLowercase(endOfThis);
 
 	return endOfThis == pattern;
 }
@@ -123,8 +133,8 @@ bool StringUtil::Match( const string& str, const string& pattern, bool caseSensi
 	string tmpPattern = pattern;
 	if( !caseSensitive )
 	{
-		StringUtil::ToLowerCase(tmpStr);
-		StringUtil::ToLowerCase(tmpPattern);
+		StringUtil::ToLowercase(tmpStr);
+		StringUtil::ToLowercase(tmpPattern);
 	}
 
 	string::const_iterator strItr = tmpStr.begin();
@@ -238,7 +248,7 @@ bool StringUtil::IsContainSqlSpecialChar( const string& str )
 {
 	static string s_SqlSpecialStrings[] = { "(", ")", "%", "*", "?", "[", "`", "$", "\'", "\"", "=", "union", "select", "delete", ";", "\r", "\n", "\\" };
 	string theString = str;
-	StringUtil::ToLowerCase( theString );
+	StringUtil::ToLowercase( theString );
 	for( size_t i = 0; i < sizeof(s_SqlSpecialStrings) / sizeof(string); ++i )
 	{
 		if( theString.find( s_SqlSpecialStrings[i]) != string::npos )
