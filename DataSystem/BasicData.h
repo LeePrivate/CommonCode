@@ -352,15 +352,15 @@ public:
 
 	BasicData();
 	virtual ~BasicData();
-
+	 
 	typedef std::pair<std::string, std::string> DataHead; // key(字段名) , type;
 
 	//重载 [ ] 操作符,使用类似 map 的方式来根据 key 找值;
 	const DataUnit& operator [] (const std::string& aKey) const;
+	//注意这里是返回的 DataUnit* 是指针哈;
+	const DataUnit* GetField(const std::string& aKey) const;
 
-	const DataUnit* getField(const std::string& aKey) const;
-
-	void parseData(const std::string& aKey,const std::string& aType, const std::string& aValue);
+	void ParseData(const std::string& aKey,const std::string& aType, const std::string& aVal);
 
 protected:
 	std::map<std::string, DataUnit> _mapData;

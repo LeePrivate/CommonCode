@@ -302,18 +302,18 @@ string StringUtil::StringOffRet( string& srcString, bool IsFront, char len )
 	}
 }
 
-int StringUtil::Atoi( string& srcString )
+int StringUtil::Atoi(const string& srcString )
 {
 	return atoi(srcString.c_str());
 }
 
 
-double StringUtil::Atof( string& srcStr )
+double StringUtil::Atof(const string& srcStr )
 {
 	return atof(srcStr.c_str());
 }
 
-std::string StringUtil::Itoa( int& num )
+std::string StringUtil::Itoa(const int& num )
 {
 	char szTmp[10] = {0};
 	_itoa_s(num, szTmp, 10);
@@ -335,6 +335,11 @@ std::string StringUtil::ReadToFrontOff( string& srcStr, const string to )
 	string tmpStr = srcStr.substr(0, srcStr.find(to));
 	srcStr = srcStr.substr(srcStr.find(to), srcStr.length());
 	return tmpStr;
+}
+
+double StringUtil::Atoll(const string& srcStr )
+{
+	return boost::lexical_cast<long long>(srcStr);
 }
 
 

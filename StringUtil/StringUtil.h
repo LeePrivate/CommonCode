@@ -13,6 +13,7 @@
 
 #include "../LeeConfig.h"
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 
 
@@ -76,13 +77,16 @@ public:
 	/*--------------------------------------------------------------string 转换数字---------------------------------------------------------------------------*/;
 
 	//string转换为数字(atoi);
-	static int Atoi(string& srcString);
+	static int Atoi(const string& srcString);
 
 	//string转换为数字(atof);
-	static double Atof(string& srcStr);
+	static double Atof(const string& srcStr);
+
+	//string 转 long long;
+	static double Atoll(const string& srcStr);
 
 	//数字转换为string(itoa);
-	static string Itoa(int& num);
+	static string Itoa(const int& num);
 
 	/*--------------------------------------------------------------字符串特殊读取,删除---------------------------------------------------------------------------*/;
 
