@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Config.h"
+#include "LeeConfig.h"
 #include "DataTimeUtil.h"
 #include "StringUtil.h"
 
