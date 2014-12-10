@@ -22,8 +22,8 @@
 #pragma once
 
 #include "LeeConfig.h"
-#include "DataTimeUtil.h"
-#include "StringUtil.h"
+#include "DateTime/DataTimeUtil.h"
+#include "StringUtil/StringUtil.h"
 
 
 //日志配置信息;
@@ -52,7 +52,7 @@ struct LogOpt
 
 	LogOpt()
 		:_sLogName("DefaultLog.txt")
-		,_sCreateTime(DataTimeUtil::GetYMD_HMS_String())
+		,_sCreateTime(DateTimeUtil::GetYMD_HMS_String())
 		,_OpenMode(ios::app)
 		,_bAddTimestamp(true)
 		,_bDebugPrint(true)

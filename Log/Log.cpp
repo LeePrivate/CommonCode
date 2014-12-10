@@ -111,7 +111,7 @@ void LogMgr::WriteDefaultLog(const char* format, ...)
 		return;
 	}
 	//判断日志生成间隔时间是否达到;
-	int timeInterval = DataTimeUtil::GetTimeStampSecondTotal(_DefaultLog->_LogOpt._sCreateTime, DataTimeUtil::GetYMD_HMS_String());
+	int timeInterval = DateTimeUtil::GetTimeStampSecondTotal(_DefaultLog->_LogOpt._sCreateTime, DateTimeUtil::GetYMD_HMS_String());
 	//如果时间间隔达到(释放原 _stdOF 生成新的 _stdOF);
 	if (timeInterval>_LogReCreateInterval)
 	{
