@@ -294,6 +294,7 @@ public:
 		return std::string((char*)_data);
 	}
 
+	//释放 _data ;
 	void ReleaseContent()
 	{
 		if (_data)
@@ -352,17 +353,15 @@ public:
 	BasicData();
 	virtual ~BasicData();
 
-	typedef std::pair<std::string, std::string> DataHead; // key , type
+	typedef std::pair<std::string, std::string> DataHead; // key(字段名) , type;
 
+	//重载 [ ] 操作符,使用类似 map 的方式来根据 key 找值;
 	const DataUnit& operator [] (const std::string& aKey) const;
+
 	const DataUnit* getField(const std::string& aKey) const;
 
-	void parseData(
-		const std::string &aKey,
-		const std::string &aType,
-		const std::string &aValue);
+	void parseData(const std::string& aKey,const std::string& aType, const std::string& aValue);
 
 protected:
-
-	std::map<std::string, DataUnit> _data;
+	std::map<std::string, DataUnit> _mapData;
 };
