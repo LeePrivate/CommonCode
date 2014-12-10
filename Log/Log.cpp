@@ -1,30 +1,29 @@
 #include "Log.h"
 
-Log::Log(const string& FileName, std::ios::openmode OpenMode /*= ios::app*/, bool AddTimestamp /*= true*/, bool DebugPrint /*= true*/)
+Log::Log(LogOpt logOpt)
 {
-	_FileName = FileName;
-#ifdef WIN32
-	_File.open(_FileName.c_str(), OpenMode);
-#else
-	_File.open(_FileName.c_str(), OpenMode);
-#endif
-	_bAddTimestamp = AddTimestamp;
-	_bDebugPrint = DebugPrint;
+	_LogOpt = logOpt;
+	_stdOF.open(_LogOpt._sLogName.c_str(), _LogOpt._OpenMode);
+	if (!_stdOF.is_open())
+	{
+		assert(false);
+	}
 }
 
 Log::~Log()
 {
-	_File.close();
+	_stdOF.close();
+	cout<<"默认日志Destruction!"<<endl;
 }
 
-const string& Log::GetFileName() const
+const string& Log::GetLogName() const
 {
-	return _FileName;
+	return _LogOpt._sLogName;
 }
 
 void Log::Write(const char* msg)
 {
-	if (!_File.is_open())
+	if (!_stdOF.is_open())
 	{
 		assert(false);
 		return;
@@ -35,14 +34,14 @@ void Log::Write(const char* msg)
 		return;
 	}
 
-	if (_bDebugPrint)
+	if (_LogOpt._bDebugPrint)
 	{
 #if defined(_DEBUG) || defined(DEBUG)			//Linux 下是定义的 DEBUG,如果是debug模式那么在控制台也输出一次信息;
 		printf("%s\n", msg);
 #endif
 	}
 
-	if (_bAddTimestamp)
+	if (_LogOpt._bAddTimestamp)
 	{
 		time_t ctTime;
 		time(&ctTime);							//得到时间;
@@ -53,16 +52,16 @@ void Log::Write(const char* msg)
 		//char tmpTime[32];
 		//asctime_s(tmpTime, &stTime);    //这个是转换为标准格式 如: Wed May 21 20:31:29 2014 ;
 
-		//自定义格式
-		_File<< stTime.tm_year + 1900 << "/"																//年 since 1900
-			<< stTime.tm_mon + 1 << "/"																		//月 0 - 11
-			<< stTime.tm_mday << " "																			//日 1 - 31
-			<< std::setw(2) <<std::setfill('0') << stTime.tm_hour										//小时
-			<< ":" << std::setw(2) <<std::setfill('0') << stTime.tm_min							//分
-			<< ":" << std::setw(2) << std::setfill('0') << stTime.tm_sec							//秒
+		//自定义格式;
+		_stdOF<< stTime.tm_year + 1900 << "/"														//年 since 1900;
+			<< stTime.tm_mon + 1 << "/"																		//月 0 - 11;
+			<< stTime.tm_mday << " "																			//日 1 - 31;
+			<< std::setw(2) <<std::setfill('0') << stTime.tm_hour										//小时;
+			<< ":" << std::setw(2) <<std::setfill('0') << stTime.tm_min							//分;
+			<< ":" << std::setw(2) << std::setfill('0') << stTime.tm_sec							//秒;
 			<< " : ";
 	}
-	_File << msg << endl;
+	_stdOF << msg << endl;
 	//_File.flush();   //这个不需要了, 在遇到std::endl控制字符的时候 flush 就被调用了;
 }
 
@@ -74,9 +73,18 @@ void Log::Update()
 
 
 LogMgr::LogMgr()
+	:_LogReCreateInterval(7200)//重新生成日志的时间为7200秒(两小时);
 {
-	_DefaultLog = NULL;
-	AddLog("DefaultLog.txt");
+	LogOpt logOpt;
+	logOpt._sLogName = logOpt._sCreateTime;
+	//替换文件名中不允许的字符;
+	StringUtil::Replace(logOpt._sLogName,":", "-");
+	//验证文件名;
+	VerifyFileName(logOpt._sLogName);	
+	//构造的时候就生成默认日志Log;( ios::app 在原有日志后面添加, ios::out 开启新的日志)
+	_DefaultLog = new Log(logOpt);		
+	//将默认日志加入日志管理;
+	_mapLog[logOpt._sLogName] = _DefaultLog;																
 }
 
 LogMgr::~LogMgr()
@@ -88,30 +96,12 @@ LogMgr::~LogMgr()
 	_mapLog.clear();
 }
 
-string LogMgr::AddLog(string fileName, std::ios::openmode openMode /*= ios::app*/, bool addTimestamp /*= true*/, bool debugPrint /*= true*/)
+string LogMgr::AddLog(LogOpt logOpt)
 {
-	VerifyFileName(fileName);
-	_mapLog[fileName] = new Log(fileName, openMode, addTimestamp, debugPrint);
-	if (_mapLog.size() == 1)
-	{
-		_DefaultLog = _mapLog[fileName];
-	}
-	return fileName;
+	VerifyFileName(logOpt._sLogName);
+	_mapLog[logOpt._sLogName] = new Log(logOpt);
+	return logOpt._sLogName;
 }
-
-// void LogMgr::AddLog(Log* log)
-// {
-// 	if (NULL == log)
-// 	{
-// 		assert(false);
-// 		return;
-// 	}
-// 	_mapLog[log->GetFileName()] = log;
-// // 	if (_mapLog.size() == 1)						//LogMgr 初始化的时候就会add一个log作为默认的,这里就不需要再判断了;
-// // 	{
-// // 		_DefaultLog = log;
-// // 	}
-// }
 
 void LogMgr::WriteDefaultLog(const char* format, ...)
 {
@@ -120,7 +110,30 @@ void LogMgr::WriteDefaultLog(const char* format, ...)
 		assert(false);
 		return;
 	}
-	
+	//判断日志生成间隔时间是否达到;
+	int timeInterval = DataTimeUtil::GetTimeStampSecondTotal(_DefaultLog->_LogOpt._sCreateTime, DataTimeUtil::GetYMD_HMS_String());
+	//如果时间间隔达到(释放原 _stdOF 生成新的 _stdOF);
+	if (timeInterval>_LogReCreateInterval)
+	{
+		LogMap::iterator iter =  _mapLog.find(GetDefaultLogName());
+		if (iter != _mapLog.end())
+		{
+			delete iter->second;
+			_mapLog.erase(iter);
+		}
+		else
+		{
+			assert(false);
+		}
+
+		LogOpt logOpt;
+		logOpt._sLogName = logOpt._sCreateTime;
+		StringUtil::Replace(logOpt._sLogName,":", "-");
+		VerifyFileName(logOpt._sLogName);	
+		_DefaultLog = new Log(logOpt);		
+		_mapLog[logOpt._sLogName] = _DefaultLog;									
+	}
+
 	char msgBuf[s_MaxLogLen] = {'\0'};
 
 	va_list args;
@@ -136,12 +149,14 @@ void LogMgr::WriteSpecifyLog(string fileName, const char* format, ...)
 	LogMap::iterator iter = _mapLog.find(fileName);
 	while (iter == _mapLog.end())
 	{
-		//如果这个指定的日志文件不存在,那么就创建一个,
-		//由于在LogMgr类初始化的时候就已经有一个Log加入到LogMap里面作为默认日志文件纯在了
+		//如果这个指定的日志文件不存在,那么就创建一个;
+		//由于在LogMgr类初始化的时候就已经有一个Log加入到LogMap里面作为默认日志文件纯在了;
 		//所以这个指定的文件一定不会是默认日志文件,输出的时候要用SpecityLog宏
 		//输出不成功的话就肯定有问题,检查!;
 		//注意!!!再次寻找的文件名是 AddLog返回的文件名,应为有改变文件名的情况出现.列入,输入文件名时忘记后缀,在Add的时候就会加上;
-		iter = _mapLog.find(AddLog(fileName));
+		LogOpt logOpt;
+		logOpt._sLogName = fileName;
+		iter = _mapLog.find(AddLog(logOpt));
 	}
 
 	char msgBuf[s_MaxLogLen] = {'\0'};
@@ -180,4 +195,14 @@ void LogMgr::VerifyFileName(string& fileName)
 	{
 		fileName += ".txt";
 	}
+}
+
+std::string LogMgr::GetDefaultLogName()
+{
+	return _DefaultLog->GetLogName();
+}
+
+void LogMgr::SetLogReCreateInterval( int secTime )
+{
+	_LogReCreateInterval = secTime;
 }
