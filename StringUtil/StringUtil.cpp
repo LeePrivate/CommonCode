@@ -9,7 +9,7 @@ void StringUtil::Trim( string& str, bool left /* = true */, bool right /* = true
 		str.erase( 0, str.find_first_not_of(delims) );	//trim left
 }
 
-std::vector<string> StringUtil::Split( const string& str, const string& delims /* = "" */, unsigned int maxSplits /* = 0 */ )
+std::vector<string> StringUtil::Split( const string& str, const string& delims /* = "\t\n" */, unsigned int maxSplits /* = 0 */ )
 {
 	//static unsinged dl;
 	std::vector<string> ret;
@@ -18,7 +18,7 @@ std::vector<string> StringUtil::Split( const string& str, const string& delims /
 	if( str.length() == 0 )
 		return ret;
 
-	//use stl methods
+	//use stl methods;
 	size_t start,pos;
 	start = 0;
 	do 
@@ -337,7 +337,7 @@ std::string StringUtil::ReadToFrontOff( string& srcStr, const string to )
 	return tmpStr;
 }
 
-double StringUtil::Atoll(const string& srcStr )
+long long StringUtil::Atoll(const string& srcStr )
 {
 	return boost::lexical_cast<long long>(srcStr);
 }

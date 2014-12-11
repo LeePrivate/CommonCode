@@ -83,7 +83,7 @@ public:
 	static double Atof(const string& srcStr);
 
 	//string 转 long long;
-	static double Atoll(const string& srcStr);
+	static long long Atoll(const string& srcStr);
 
 	//数字转换为string(itoa);
 	static string Itoa(const int& num);
@@ -117,6 +117,5 @@ public:
 
 	//检查字符串是否含有sql关键字,防止sql注入;
 	static bool IsContainSqlSpecialChar( const string& str );
-
 };
 

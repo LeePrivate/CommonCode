@@ -59,6 +59,6 @@ public:
 	}
 
 protected:
-
+	//注意:子类重新父类虚函数的时候注意养成良好的习惯加上 override;
 	virtual void ParseLine(unsigned int index, const std::vector<std::string> &row) = 0;
 };
