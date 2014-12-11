@@ -12,6 +12,8 @@
 
 #include "LeeConfig.h"
 
+
+//数据基础单位(就是每个字段的类型,和值);
 class DataUnit
 {
 public:
@@ -193,11 +195,15 @@ public:
 
 	const DataUnit& operator >> (char& aVal) const
 	{
+		assert(_type == TYPE_CHAR);
 		aVal = *((char*)_data);
+
+		return *this;
 	}
 
 	const DataUnit& operator >> (short& aVal) const
 	{
+		assert(_type == TYPE_SHORT);
 		aVal = *(short*)_data;
 
 		return *this;
@@ -205,6 +211,7 @@ public:
 
 	const DataUnit& operator >> (int& aVal) const
 	{
+		assert(_type == TYPE_INT);
 		aVal = *(int*)_data;
 
 		return *this;
@@ -212,6 +219,7 @@ public:
 
 	const DataUnit& operator >> (float& aVal) const
 	{
+		assert(_type == TYPE_FLOAT);
 		aVal = *(float*)_data;
 
 		return *this;
@@ -219,6 +227,7 @@ public:
 
 	const DataUnit& operator >> (double& aVal) const
 	{
+		assert(_type == TYPE_DOUBLE);
 		aVal = *(double*)_data;
 
 		return *this;
@@ -226,6 +235,7 @@ public:
 
 	const DataUnit& operator >> (long& aVal) const
 	{
+		assert(_type == TYPE_LONG);
 		aVal = *(long*)_data;
 
 		return *this;
@@ -233,6 +243,7 @@ public:
 
 	const DataUnit& operator >> (long long& aVal) const
 	{
+		assert(_type == TYPE_LONGLONG);
 		aVal = *(long long*)_data;
 
 		return *this;
@@ -240,6 +251,7 @@ public:
 
 	const DataUnit& operator >> (std::string& aVal) const
 	{
+		assert(_type == TYPE_STRING);
 		aVal = (char*)_data;
 
 		return *this;
@@ -346,6 +358,7 @@ protected:
 	void* _data;
 };
 
+//研究了来加注释;
 class BasicData
 {
 public:
@@ -353,13 +366,13 @@ public:
 	BasicData();
 	virtual ~BasicData();
 	 
-	typedef std::pair<std::string, std::string> DataHead; // key(字段名) , type;
+	//typedef std::pair<std::string, std::string> DataHead; // key(字段名) , type;
 
 	//重载 [ ] 操作符,使用类似 map 的方式来根据 key 找值;
 	const DataUnit& operator [] (const std::string& aKey) const;
 	//注意这里是返回的 DataUnit* 是指针哈;
 	const DataUnit* GetField(const std::string& aKey) const;
-
+	//解析数据(将文本读取到的数据存入_mapData);
 	void ParseData(const std::string& aKey,const std::string& aType, const std::string& aVal);
 
 protected:
