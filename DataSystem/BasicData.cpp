@@ -1,6 +1,6 @@
 #include "BasicData.h"
 
-#include "StringUtil/StringUtil.h"
+#include "../StringUtil/StringUtil.h"
 
 BasicData::BasicData()
 {
@@ -34,14 +34,15 @@ void BasicData::ParseData(const std::string &aKey, const std::string &aType, con
 
 	if (aType == "char")
 	{
-		_mapData[aKey] << (char)atoi(aVal.c_str());
+		_mapData[key] << (char)atoi(aVal.c_str());
 	}
 	else if (aType == "short")
 	{
-		_mapData[aKey] << (short)atoi(aVal.c_str());
+		_mapData[key] << (short)atoi(aVal.c_str());
 	}
 	else if (aType == "int")
 	{
+		_mapData[key];
 		_mapData[key] << atoi(aVal.c_str());
 	}
 	else if (aType == "float")

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "CSVReader.hpp"
 
-#include <map>
-
+#include "../CsvParser/CsvReader.h"
+#include "../StringUtil/StringUtil.h"
+#include <boost/foreach.hpp>
 #include "BasicData.h"
-#include "StringModifier.h"
 
-class DataLibrary
-		: public CSVReader
+
+class DataLibrary : public CSVReader
 {
  
 public:
@@ -20,110 +19,109 @@ public:
 
 	virtual ~DataLibrary()
 	{
-		clearLibrary();
+		ClearLibrary();
 	}
 
-	virtual const BasicData& getDataByKey(int aId) const
+	virtual const BasicData& GetDataByKey(int aId) const
 	{
-		std::map<int, BasicData*>::const_iterator itr = _library.find(aId);
-		assert(itr != _library.end());
+		std::map<int, BasicData*>::const_iterator itr = _mapLibrary.find(aId);
+		assert(itr != _mapLibrary.end());
 		return *(itr->second);
 	}
 
 	virtual const std::map<int, BasicData*>& getAllData() const
 	{
-		return _library;
+		return _mapLibrary;
 	}
 
-	virtual const BasicData* getDataPointerByKey(int aId) const
+	virtual const BasicData* GetDataPointerByKey(int aId) const
 	{
-		std::map<int, BasicData*>::const_iterator itr = _library.find(aId);
-		assert(itr != _library.end());
+		std::map<int, BasicData*>::const_iterator itr = _mapLibrary.find(aId);
+		assert(itr != _mapLibrary.end());
 		return itr->second;
 	}
 
-	int getDataRecordCount() const
+	int GetDataRecordCount() const
 	{
-		return _library.size();
+		return _mapLibrary.size();
 	}
 
-	virtual bool loadDataFromResource(const std::string &aSource) override
+	virtual bool LoadDataFromResource(const std::string &aSource, int skip_line = 0) override
 	{
-		if (_library.size() != 0)
+		if (_mapLibrary.size() != 0)
 		{
-			clearLibrary();
+			ClearLibrary();
 		}
 
-		return CSVReader::loadDataFromResource(aSource);
+		//注意:这是就是最牛B 的函数;
+		return CSVReader::LoadDataFromResource(aSource);
 	}
 
 protected:
 
-	virtual void parseHead(const std::vector<std::string> &aData)
+	virtual void ParseHead(const std::vector<std::string>& aRowData)
 	{
-		for (auto field : aData)
+
+		BOOST_FOREACH(string field, aRowData)
 		{
-			std::vector<std::string> split = StringModifier::split(
-				field,
-				"$");
+			std::vector<std::string> split = StringUtil::Split(field, "$");
 			assert(split.size() > 1);
-			_head.push_back(std::make_pair(split[0], split[1]));
+			_vecHead.push_back(std::make_pair(split[0], split[1]));
 		}
 	}
 
-	virtual void parseData(const std::vector<std::string> &aData)
+	virtual void ParseData(const std::vector<std::string> &aRowData)
 	{
-		assert(aData.size() == _head.size());
+		assert(aRowData.size() == _vecHead.size());
 
-		BasicData *data = new BasicData();
-		for (unsigned int i = 0; i < aData.size(); ++i)
+		BasicData *pData = new BasicData();
+		for (unsigned int i = 0; i < aRowData.size(); ++i)
 		{
-			data->parseData(
-				_head[i].first,		// key
-				_head[i].second,	// type
-				aData[i]);			// value
+			pData->ParseData(
+				_vecHead[i].first,		// key
+				_vecHead[i].second,	// type
+				aRowData[i]);					// value
 		}
 
-		_library[getDataKey(data)] = data;
+		_mapLibrary[GetDataKey(pData)] = pData;
 	}
 
-	virtual void parseLine(
-		unsigned int aIndex,
-		const std::vector<std::string> &aRow) override
+	virtual void ParseLine(unsigned int aIndex, const std::vector<std::string> &aRow) override
 	{
 		if (aIndex == 0)
 		{
-			parseHead(aRow);
+			ParseHead(aRow);
 		}
 		else
 		{
-			parseData(aRow);
+			ParseData(aRow);
 		}
 	}
 
-	virtual int getDataKey(BasicData *aData) const
+	virtual int GetDataKey(BasicData *aData) const
 	{
 		int key;
+		//注意这里是唯一死板的地方,如果CSV文件有改动,这里就必须改.文件第一个字段必须为 "id";
 		(*aData)["id"] >> key;
 		return key;
 	}
 
-	void clearLibrary()
+	void ClearLibrary()
 	{
-		for (auto dataInMap : _library)
+		BOOST_FOREACH(auto mapElem, _mapLibrary)
 		{
-			if (dataInMap.second)
+			if (mapElem.second)
 			{
-				delete dataInMap.second;
+				delete mapElem.second;
 			}
 		}
 
-		_library.clear();
-		_head.clear();
+		_mapLibrary.clear();
+		_vecHead.clear();
 	}
 
 protected:
 
-	std::vector<BasicData::DataHead> _head;
-	std::map<int, BasicData*> _library;
+	std::vector<BasicData::DataHead> _vecHead;
+	std::map<int, BasicData*> _mapLibrary;
 };

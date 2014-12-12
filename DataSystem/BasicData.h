@@ -6,11 +6,14 @@
 	purpose:	DataSystem 数据基础;
 	注意 : 从这里开始引入一个新的命名规则函数参数前面加 a 代表 argument 参数的意思;
 	DataUnit 类为数据基类,用于每个单独类型的数据的输入,输出;
+
+	DataUnit 是一个单独的数据字段;
+	BasicData 是一行数据字段;
 *********************************************************************/
 
 #pragma once
 
-#include "LeeConfig.h"
+#include "../LeeConfig.h"
 
 
 //数据基础单位(就是每个字段的类型,和值);
@@ -366,7 +369,7 @@ public:
 	BasicData();
 	virtual ~BasicData();
 	 
-	//typedef std::pair<std::string, std::string> DataHead; // key(字段名) , type;
+	typedef std::pair<std::string, std::string> DataHead; // key(字段名) , type;
 
 	//重载 [ ] 操作符,使用类似 map 的方式来根据 key 找值;
 	const DataUnit& operator [] (const std::string& aKey) const;

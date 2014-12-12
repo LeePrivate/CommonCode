@@ -73,13 +73,15 @@ public: virtual void Set##funName(varType var){ varName = var; }
 
 /*----------------------------------------------------------------------------------------各种 FOR_EACH 简写宏定义----------------------------------------------------------*/
 
-/*使用C++11的写法,ins 为 stl 任意的容器 vector map 等的定义实体, elem 为容器内元素变量名(任意自定);
+/*
+注 : 这个宏只能在vs2010以上的版本才能编译通过, vs2010 不支持C++11;
+使用C++11的写法,ins 为 stl 任意的容器 vector map 等的定义实体, elem 为容器内元素变量名(任意自定);
 这种写法更加简洁;
 如:content 为 vector<string> 那么 elem 为每一个string的引用;
 如:content 为 map<int, string> 那么 elem 为每一个pair的应用, elem.second 这样来用;
 注意 : 这里的 content 为定义的实体不是类型 ;
 
-列子:
+列子;
 map<int, string> _library;
 
 FOR_EACH(elem, _library)
@@ -93,11 +95,20 @@ FOR_EACH(elem, _library)
 #endif
 
 
+/*下面这两个只是for循环的简写宏*/
+#if !defined FOR_EACH_VEC
+#define FOR_EACH_VEC(origin, ins, it) for(origin::iterator it = ins.begin() ; it != ins.end() ; ++it)
+#endif
+
+#if !defined FOR_EACH_MAP
+#define FOR_EACH_MAP(origin_front, origin2_back, ins, it) for(origin_front##,##origin2_back::iterator it = ins.begin() ; it != ins.end() ; ++it)
+#endif
+
 /*for 循环 vector 特殊的需要调用同一个成员函数的宏定义简写,这个就不需要it名了,反正内部帮你写好了;
 第一个参数是 vec原型 如: vector<int>;
 第二个参数是 vector 实体名;
 第三个是 元素的成员函数;
-注意 : 这种也只实用于 vector 中元素是实体的情况*/
+注意 : 这种也只实用于 vector 中元素是实体的情况;*/
 #if !defined FOR_EACH_VEC_FUN
 #define FOR_EACH_VEC_FUN(origin, ins, fun) for(origin::iterator it = ins.begin() ; it != ins.end() ; ++it)\
 {\

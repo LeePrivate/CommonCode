@@ -9,6 +9,8 @@
 	name$string,	server
 	ip$string,			192.168.1.168
 	port$int,			8010 
+
+	使用时直接调用 CSVReader 中的 LoadDataFromResource(给出文件路径即可);
 *********************************************************************/
 
 
