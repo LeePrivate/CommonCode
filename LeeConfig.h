@@ -73,22 +73,25 @@ public: virtual void Set##funName(varType var){ varName = var; }
 
 /*----------------------------------------------------------------------------------------各种 FOR_EACH 简写宏定义----------------------------------------------------------*/
 
-/*for 循环 vector 的宏定义简写;
-第一个参数是 vec原型 如: vector<int>;
-第二个参数是 vector 实体名;
-第三个参数是 iterator 名;*/
-#if !defined FOR_EACH_VEC
-#define FOR_EACH_VEC(origin, ins, it) for(origin::iterator it = ins.begin() ; it != ins.end() ; ++it)
+/*使用C++11的写法,ins 为 stl 任意的容器 vector map 等的定义实体, elem 为容器内元素变量名(任意自定);
+这种写法更加简洁;
+如:content 为 vector<string> 那么 elem 为每一个string的引用;
+如:content 为 map<int, string> 那么 elem 为每一个pair的应用, elem.second 这样来用;
+注意 : 这里的 content 为定义的实体不是类型 ;
+
+列子:
+map<int, string> _library;
+
+FOR_EACH(elem, _library)
+{
+	elem.first;
+	elem.second.DoSomething();
+}
+*/
+#if !defined FOR_EACH
+#define FOR_EACH(elem, ins) for(auto elem : ins)
 #endif
 
-/*for 循环 map 的宏定义简写;
-第一个参数是 vec原型 如: map<int, string>;
-第二个参数是 map 实体名;
-第三个参数是 iterator 名;
-注意 : 这里看上去宏是有4个参数,实际上是应为map定义中的 "," 号,这里迫于无奈用了 ## 以后找到其他办法来修改;*/
-#if !defined FOR_EACH_MAP
-#define FOR_EACH_MAP(origin_front, origin2_back, ins, it) for(origin_front##,##origin2_back::iterator it = ins.begin() ; it != ins.end() ; ++it)
-#endif
 
 /*for 循环 vector 特殊的需要调用同一个成员函数的宏定义简写,这个就不需要it名了,反正内部帮你写好了;
 第一个参数是 vec原型 如: vector<int>;
