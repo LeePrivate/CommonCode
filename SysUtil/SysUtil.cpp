@@ -1,6 +1,6 @@
-#include "../Include/SysUtil.h"
+#include "SysUtil.h"
 
-void SysUtil::Sleep( uint ms )
+void SysUtil::Sleep( uint32 ms )
 {
 #if TARGET_PLATFORM == PLATFORM_WIN
 	//∫¡√Î;
@@ -11,9 +11,9 @@ void SysUtil::Sleep( uint ms )
 #endif
 }
 
-uint SysUtil::GetMSTime()
+uint32 SysUtil::GetMSTime()
 {
-#if TARGET_PLATFORM == PLATFORM_WIN
+#if TARGET_PLATFORM == PLATFORM_WINDOWS
 	return ::GetTickCount();
 #else
 	struct timeval tv;
@@ -21,4 +21,33 @@ uint SysUtil::GetMSTime()
 	return ( tv.tv_sec * 1000 ) + ( tv.tv_usec / 1000 );
 #endif
 }
+
+void SysUtil::SetConsoleColor(unsigned short ForeColor /*= FG_WHITE*/, unsigned short BackGroundColor /*= 0*/)
+{
+#if TARGET_PLATFORM == PLATFORM_WINDOWS
+	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);  
+	SetConsoleTextAttribute(hCon, ForeColor | BackGroundColor);
+
+#elif TARGET_PLATFORM == PLATFORM_LINUX
+
+#elif TARGET_PLATFORM == PLATFORM_MAC
+
+#endif
+
+}
+
+void SysUtil::RestoreConsoleColor()
+{
+#if TARGET_PLATFORM == PLATFORM_WINDOWS
+	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hCon, FG_WHITE  | 0);
+
+#elif TARGET_PLATFORM == PLATFORM_LINUX
+
+#elif TARGET_PLATFORM == PLATFORM_MAC
+
+#endif
+}
+
+
 
