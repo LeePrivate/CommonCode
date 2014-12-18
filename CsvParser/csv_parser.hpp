@@ -38,6 +38,8 @@
 
 #define LIBCSV_PARSER_VERSION_NUMBER 10000
 
+#include "LeeConfig.h"
+
 /* C++ header files */
 #include <string>
 #include <vector>

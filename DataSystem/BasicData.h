@@ -361,7 +361,7 @@ protected:
 	void* _data;
 };
 
-//研究了来加注释;
+//DataUnit 是一个单独的数据单元, BasicData 就是一行数据 map<字段名, DataUnit>;
 class BasicData
 {
 public:
