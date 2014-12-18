@@ -1,10 +1,10 @@
 /*!
  * \file PlatForm.h
  *
- * \author lixiang
- * \date 五月 2014
+ * \author 李翔；
+ * \date 五月 2014；
  *
- * 平台相关宏定义;
+ * 平台相关宏定义；
  */
 
 #pragma once

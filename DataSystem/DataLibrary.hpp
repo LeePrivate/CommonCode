@@ -61,7 +61,6 @@ protected:
 
 	virtual void ParseHead(const std::vector<std::string>& aRowData)
 	{
-
 		BOOST_FOREACH(string field, aRowData)
 		{
 			std::vector<std::string> split = StringUtil::Split(field, "$");
@@ -80,7 +79,7 @@ protected:
 			pData->ParseData(
 				_vecHead[i].first,		// key
 				_vecHead[i].second,	// type
-				aRowData[i]);					// value
+				aRowData[i]);			// value
 		}
 
 		_mapLibrary[GetDataKey(pData)] = pData;

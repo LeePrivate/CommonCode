@@ -47,9 +47,9 @@ bool csv_parser::init(const char * input_file)
 
 	memset(input_filename, 0, filename_length + 1);
 
-	strcpy(input_filename, input_file);
+	strcpy_s(input_filename, sizeof(input_file), input_file);
 
-	input_fp = fopen(input_file, "r");
+	fopen_s(&input_fp, input_file, "r");
 
 	if (input_fp == NULL)
 	{
@@ -82,7 +82,7 @@ void csv_parser::set_field_term_char(char fields_terminated_by)
 	if (fields_terminated_by != 0)
 	{
 		field_term_char   = fields_terminated_by;
-		field_term_length = 1U;
+		field_term_length = 1u;
 	}
 }
 
