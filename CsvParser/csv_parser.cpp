@@ -47,9 +47,15 @@ bool csv_parser::init(const char * input_file)
 
 	memset(input_filename, 0, filename_length + 1);
 
-	strcpy_s(input_filename, sizeof(input_file), input_file);
+	strcpy_s(input_filename, filename_length + 1, input_file);
 
-	fopen_s(&input_fp, input_file, "r");
+	errno_t e = fopen_s(&input_fp, input_file, "r");
+
+	/*(e == 13) File already open !*/
+	if (e)
+	{
+		assert(0 && "File open error  ! Maybe already opened !");
+	}
 
 	if (input_fp == NULL)
 	{
