@@ -1,3 +1,22 @@
+/*!
+ * \class DataLibrary
+ *
+ * \brief 
+ *
+ * \author 李翔;
+ * \date 十二月 2014;
+ */
+
+/*
+使用方法 :
+
+定义实例
+DataLibrary dataLibrary;
+给定要读取的文件路径(这里注意 这里是读取Csv文件, 并且文件的第一行必须为 id$int, name$string, sex$string, tall$float  这种格式的,并且第一列必须为自增 id)
+dataLibrary.LoadDataFromResource("文件路径"); 
+获取数据(获取数据有多种方法请看源文件)
+dataLibrary[1][name].ToString()*/
+
 #pragma once
 
 
@@ -55,6 +74,13 @@ public:
 
 		//注意:这是就是最牛B 的函数;
 		return CSVReader::LoadDataFromResource(aSource);
+	}
+
+	virtual BasicData& operator[](const int& aId)
+	{
+		std::map<int, BasicData*>::const_iterator itr = _mapLibrary.find(aId);
+		assert(itr != _mapLibrary.end());
+		return *(itr->second);
 	}
 
 protected:
