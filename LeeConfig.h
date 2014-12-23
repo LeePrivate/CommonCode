@@ -10,6 +10,8 @@
 #include <queue>
 #include <time.h>
 #include <stdarg.h>							//va_list va_start ..สนำร;
+#include <algorithm>
+#include <functional>
 
 
 
